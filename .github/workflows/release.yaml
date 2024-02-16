@@ -215,7 +215,7 @@ jobs:
           | changewatch-exporter-amd64-linux | `${{ needs.build.outputs.changewatch-exporter-amd64-linux_sha256 }}` |
           | changewatch-exporter-arm64-linux | `${{ needs.build.outputs.changewatch-exporter-arm64-linux_sha256 }}` |
           | changewatch-exporter-amd64-windows.exe | `${{ needs.build.outputs.changewatch-exporter-amd64-windows_sha256 }}` |
-          | ghcr.io/afreyermuth98/changewatch-exporter:${{ steps.get_tag.outputs.tag }} | `${{ needs.container.outputs.container_sha256 }}` |
+          | ghcr.io/afreyermuth98/changewatch-exporter:v${{ steps.get_tag.outputs.tag }} | `${{ needs.container.outputs.container_sha256 }}` |
         files: |
          ./bin/changewatch-exporter-arm64-darwin
          ./bin/changewatch-exporter-amd64-linux
