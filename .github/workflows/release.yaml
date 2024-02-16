@@ -18,9 +18,9 @@ defaults:
   run:
     shell: bash
 env:
-  GONOPROXY: github.com/homagames/*
-  GONOSUMDB: github.com/homagames/*
-  GOPRIVATE: github.com/homagames/*
+  GONOPROXY: github.com/afreyermuth98/*
+  GONOSUMDB: github.com/afreyermuth98/*
+  GOPRIVATE: github.com/afreyermuth98/*
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 jobs:
@@ -216,7 +216,7 @@ jobs:
           | changewatch-exporter-amd64-linux | `${{ needs.build.outputs.changewatch-exporter-amd64-linux_sha256 }}` |
           | changewatch-exporter-arm64-linux | `${{ needs.build.outputs.changewatch-exporter-arm64-linux_sha256 }}` |
           | changewatch-exporter-amd64-windows.exe | `${{ needs.build.outputs.changewatch-exporter-amd64-windows_sha256 }}` |
-          | ghcr.io/homagames/changewatch-exporter:${{ steps.get_tag.outputs.tag }} | `${{ needs.container.outputs.container_sha256 }}` |
+          | ghcr.io/afreyermuth98/changewatch-exporter:${{ steps.get_tag.outputs.tag }} | `${{ needs.container.outputs.container_sha256 }}` |
         files: |
          ./bin/changewatch-exporter-arm64-darwin
          ./bin/changewatch-exporter-amd64-linux
