@@ -192,7 +192,7 @@ jobs:
       run: |
         git config user.name "GitHub Actions Bot"
         git config user.email "<>"
-        VERSION_TO_RELEASE= ${{ steps.get_tag.outputs.tag }}
+        VERSION_TO_RELEASE=${{ steps.get_tag.outputs.tag }}
         GITMOJI=$(jq '.project.version = $newTag' --arg newTag "${VERSION_TO_RELEASE//v}" .gitmoji-changelogrc)
         echo $GITMOJI > .gitmoji-changelogrc
         gitmoji-changelog --preset generic
