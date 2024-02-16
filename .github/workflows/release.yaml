@@ -205,6 +205,9 @@ jobs:
         #git push origin HEAD:master --follow-tags
     - name: Push changes
       uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.TEST_TOKEN }}
+        branch: master
       # with:
       #   github_token: ${{ secrets.GITHUB_TOKEN}}
     # - name: Retrieve the build artifacts
