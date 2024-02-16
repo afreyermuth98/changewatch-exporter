@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - "*"
-    # tags:
-    #   - "*"
   workflow_dispatch:
     branches:
       - master
@@ -48,113 +46,12 @@ jobs:
         cache: false
     - name: Go Test
       run: go test -v ./...
-  build:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
-    needs: 
-      - test
-      - lint
-    outputs:
-      changewatch-exporter-arm64-darwin_sha256: ${{ steps.output-sha256sum.outputs.changewatch-exporter-arm64-darwin_sha256 }}
-      changewatch-exporter-amd64-linux_sha256: ${{ steps.output-sha256sum.outputs.changewatch-exporter-amd64-linux_sha256 }}
-      changewatch-exporter-arm64-linux_sha256: ${{ steps.output-sha256sum.outputs.changewatch-exporter-arm64-linux_sha256 }}
-      changewatch-exporter-amd64-windows_sha256: ${{ steps.output-sha256sum.outputs.changewatch-exporter-amd64-windows_sha256 }}
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/cache@v3
-      with:
-        key: ${{ runner.os }}-changewatch-exporter-${{ hashFiles('**/go.sum') }}
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        restore-keys: |
-          ${{ runner.os }}-changewatch-exporter-
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: "1.21"
-    - name: Configure git
-      run: git config --global --add url."git@github.com:".insteadOf "https://github.com/"
-    - name: Build
-      run: |
-        mkdir -p ./bin
-        go get
-        go generate
-        GOOS=darwin CGO_ENABLED=0 GOARCH=arm64 go build -o ./bin/changewatch-exporter-arm64-darwin main.go
-        GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -o ./bin/changewatch-exporter-amd64-linux main.go
-        GOOS=linux CGO_ENABLED=0 GOARCH=arm64 go build -o ./bin/changewatch-exporter-arm64-linux main.go
-        GOOS=windows CGO_ENABLED=0 GOARCH=amd64 go build -o ./bin/changewatch-exporter-amd64-windows.exe main.go
-    - name: Save artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: changewatch-exporter
-        path: ./bin
-    - name: Export sha256sum
-      id: output-sha256sum
-      run: |
-        echo "changewatch-exporter-arm64-darwin_sha256=$(sha256sum ./bin/changewatch-exporter-arm64-darwin | cut -f1 -d' ')" >> "$GITHUB_OUTPUT"
-        echo "changewatch-exporter-amd64-linux_sha256=$(sha256sum ./bin/changewatch-exporter-amd64-linux | cut -f1 -d' ')" >> "$GITHUB_OUTPUT"
-        echo "changewatch-exporter-arm64-linux_sha256=$(sha256sum ./bin/changewatch-exporter-arm64-linux | cut -f1 -d' ')" >> "$GITHUB_OUTPUT"
-        echo "changewatch-exporter-amd64-windows_sha256=$(sha256sum ./bin/changewatch-exporter-amd64-windows.exe | cut -f1 -d' ')" >> "$GITHUB_OUTPUT"
-  container:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
-    outputs:
-      container_sha256: ${{ steps.build_and_push.outputs.digest }}
-    needs: 
-     - build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}          
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha            
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      # - name: Login to Docker Hub
-      #   if: github.event_name != 'pull_request'
-      #   uses: docker/login-action@v3
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        id: build_and_push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          # push: ${{ github.event_name != 'pull_request' }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          target: production
-          platforms: linux/amd64,linux/arm64
   tag:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     needs: 
-     - container
-     - build
+     - lint
+     - test
     steps:
     - uses: actions/checkout@v4
       with:
