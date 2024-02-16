@@ -147,7 +147,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           target: production
           platforms: linux/amd64,linux/arm64
-  release:
+  tag:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     needs: 
@@ -157,8 +157,8 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Get next tag version
-      id: get_tag
+    - name: compute next tag version
+      id: compute_tag
       run: |
        ACTUAL_VERSION=$(git describe --tags --abbrev=0)
        if [[ ${{ github.event.inputs.type }} == "patch" ]]
@@ -192,7 +192,7 @@ jobs:
       run: |
         git config user.name "GitHub Actions Bot"
         git config user.email "<>"
-        VERSION_TO_RELEASE=${{ steps.get_tag.outputs.tag }}
+        VERSION_TO_RELEASE=${{ steps.compute_tag.outputs.tag }}
         GITMOJI=$(jq '.project.version = $newTag' --arg newTag "${VERSION_TO_RELEASE//v}" .gitmoji-changelogrc)
         echo $GITMOJI > .gitmoji-changelogrc
         gitmoji-changelog --preset generic
@@ -205,7 +205,21 @@ jobs:
       with:
         name: changewatch-exporter
         path: ./bin
+  release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    steps:
+    - uses: actions/checkout@v4
+    - name: Get tag version
+      id: get_tag
+      run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
+    - name: Retrieve the build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: changewatch-exporter
+        path: ./bin
     - name: Release
+      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
         body: | 
@@ -215,7 +229,7 @@ jobs:
           | changewatch-exporter-amd64-linux | `${{ needs.build.outputs.changewatch-exporter-amd64-linux_sha256 }}` |
           | changewatch-exporter-arm64-linux | `${{ needs.build.outputs.changewatch-exporter-arm64-linux_sha256 }}` |
           | changewatch-exporter-amd64-windows.exe | `${{ needs.build.outputs.changewatch-exporter-amd64-windows_sha256 }}` |
-          | ghcr.io/afreyermuth98/changewatch-exporter:v${{ steps.get_tag.outputs.tag }} | `${{ needs.container.outputs.container_sha256 }}` |
+          | ghcr.io/homagames/changewatch-exporter:${{ steps.get_tag.outputs.tag }} | `${{ needs.container.outputs.container_sha256 }}` |
         files: |
          ./bin/changewatch-exporter-arm64-darwin
          ./bin/changewatch-exporter-amd64-linux
