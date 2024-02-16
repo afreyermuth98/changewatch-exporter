@@ -153,7 +153,6 @@ jobs:
     needs: 
      - container
      - build
-     - get_tag
     steps:
     - uses: actions/checkout@v4
       with:
