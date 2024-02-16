@@ -1,5 +1,13 @@
 # Changelog
 
+<a name="1.2.1"></a>
+## 1.2.1 (2024-02-16)
+
+### Miscellaneous
+
+-  Update release.yaml [[7a2a7d6](https://github.com/afreyermuth98/changewatch-exporter/commit/7a2a7d6b58a7decc2ced4a6a53641b9f66c7a4d1)]
+
+
 <a name="1.2.0"></a>
 ## 1.2.0 (2024-02-16)
 
