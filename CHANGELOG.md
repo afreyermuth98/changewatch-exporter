@@ -1,5 +1,13 @@
 # Changelog
 
+<a name="1.2.2"></a>
+## 1.2.2 (2024-02-16)
+
+### Miscellaneous
+
+-  Create test.yaml [[0526bc5](https://github.com/afreyermuth98/changewatch-exporter/commit/0526bc5bfa4aa7f0c42c1fb04151d0aae30c4646)]
+
+
 <a name="1.2.1"></a>
 ## 1.2.1 (2024-02-16)
 
