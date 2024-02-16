@@ -1,5 +1,13 @@
 # Changelog
 
+<a name="1.1.0"></a>
+## 1.1.0 (2024-02-16)
+
+### Fixed
+
+- 🐛 Release needs a tag [[6b01435](https://github.com/afreyermuth98/changewatch-exporter/commit/6b01435fa05685c2372e99a2dc06ff6b0d08baa0)]
+
+
 <a name="1.0.0"></a>
 ## 1.0.0 (2024-02-16)
 
