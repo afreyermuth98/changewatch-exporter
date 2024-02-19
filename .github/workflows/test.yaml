@@ -120,8 +120,6 @@ jobs:
       - container
     steps:
     - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
     - name: Get tag version
       id: get_tag
       run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
