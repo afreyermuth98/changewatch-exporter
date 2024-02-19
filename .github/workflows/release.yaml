@@ -17,12 +17,6 @@ on:
 defaults:
   run:
     shell: bash
-env:
-  GONOPROXY: github.com/afreyermuth98/*
-  GONOSUMDB: github.com/afreyermuth98/*
-  GOPRIVATE: github.com/afreyermuth98/*
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 jobs:
   lint:
     runs-on: ubuntu-latest
