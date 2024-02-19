@@ -1,5 +1,13 @@
 # Changelog
 
+<a name="1.2.13"></a>
+## 1.2.13 (2024-02-19)
+
+### Changed
+
+- 🔧 WIP [[49982fd](https://github.com/afreyermuth98/changewatch-exporter/commit/49982fd390d02081c2495334549b090eb6d60554)]
+
+
 <a name="1.2.12"></a>
 ## 1.2.12 (2024-02-19)
 
