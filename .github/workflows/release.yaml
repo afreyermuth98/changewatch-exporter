@@ -41,6 +41,9 @@ jobs:
     - name: Go Test
       run: go test -v ./...
   tag:
+    permissions:                # Job-level permissions configuration starts here
+      contents: write           # 'write' access to repository contents
+      pull-requests: write 
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     needs: 
@@ -101,5 +104,5 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.TEST_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: master
