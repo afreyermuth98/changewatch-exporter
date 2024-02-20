@@ -41,9 +41,6 @@ jobs:
     - name: Go Test
       run: go test -v ./...
   tag:
-    permissions:                # Job-level permissions configuration starts here
-      contents: write           # 'write' access to repository contents
-      pull-requests: write 
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     needs: 
